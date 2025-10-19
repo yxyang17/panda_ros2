@@ -13,6 +13,24 @@ endif()
 
 option(CHECK_TIDY "Adds clang-tidy tests" OFF)
 
+
+set(THIS_PACKAGE_INCLUDE_DEPENDS
+tf2_ros
+tf2_eigen
+ament_cmake
+controller_interface 
+pluginlib 
+rclcpp_lifecycle 
+hardware_interface 
+franka_msgs 
+geometry_msgs 
+franka_semantic_components 
+generate_parameter_library
+realtime_tools
+)
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -62,10 +80,22 @@ endif()
 pluginlib_export_plugin_description_file(
         controller_interface franka_example_controllers.xml)
 
+
+#run a sample online test of the CartesianImpedanceController
+add_executable (test_cartesian_imp src/test_cartesian_imp.cpp)
+target_include_directories(
+  test_cartesian_imp
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(test_cartesian_imp PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
+
 install(
         TARGETS
-        ${PROJECT_NAME}
-        RUNTIME DESTINATION bin
+        ${PROJECT_NAME} test_cartesian_imp
+        RUNTIME DESTINATION lib/${PROJECT_NAME}
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
 )

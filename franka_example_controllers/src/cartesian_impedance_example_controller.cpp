@@ -53,12 +53,12 @@ CartesianImpedanceExampleController::CallbackReturn CartesianImpedanceExampleCon
   }
   // Equilibrium pose subscription
   sub_equilibrium_pose_ = get_node()->create_subscription<geometry_msgs::msg::PoseStamped>(
-      "equilibrium_pose", 20,
+      "~/equilibrium_pose", 20,
       std::bind(&CartesianImpedanceExampleController::equilibriumPoseCallback, this,
                 std::placeholders::_1));
   // Nullspace exploration direction subscription
   sub_nullspace_dir_ = get_node()->create_subscription<std_msgs::msg::Float32>(
-      "nullspace_direction", 20,
+      "~/nullspace_direction", 20,
       std::bind(&CartesianImpedanceExampleController::nullspaceDirCallback, this,
                 std::placeholders::_1));
 
@@ -255,6 +255,7 @@ void CartesianImpedanceExampleController::equilibriumPoseCallback(
     const geometry_msgs::msg::PoseStamped::SharedPtr msg) {
   std::lock_guard<std::mutex> position_d_target_mutex_lock(
       position_and_orientation_d_target_mutex_);
+  std::cerr<<"\ntranslation "<< msg->pose.position.x << msg->pose.position.y<< msg->pose.position.z <<std::endl;
   position_d_target_ << msg->pose.position.x, msg->pose.position.y, msg->pose.position.z;
   Eigen::Quaterniond last_orientation_d_target(orientation_d_target_);
   orientation_d_target_.coeffs() << msg->pose.orientation.x, msg->pose.orientation.y,

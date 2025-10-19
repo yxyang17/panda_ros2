@@ -16,6 +16,11 @@
   <depend>franka_msgs</depend>
   <depend>franka_semantic_components</depend>
   <depend>generate_parameter_library</depend>
+  
+  
+  <depend>tf2_ros</depend>
+  <depend>tf2_eigen</depend>
+  <depend>geometry_msgs</depend>
 
   <build_depend>eigen</build_depend>
 
